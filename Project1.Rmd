@@ -67,7 +67,7 @@ My bivariate graph of my gender predictor shows the count of each threat level s
 proportion = prop.table(table(ps$Person.Race, ps$Factors.Threat.Level), margin = 1)
 
 #Plot race graph
-barplot(proportion, main = "Grouped Threat Level Chart by Race", xlab = "Race", ylab = "Frequency", col = c("darkgrey", "darkblue", "red", "black", "lightblue", "pink", "green"), legend.text = rownames(proportion), beside = TRUE)
+barplot(proportion, main = "Grouped Threat Level Chart by Race", xlab = "Race", ylab = "Frequency", col = c("red", "orange", "yellow", "green", "lightblue", "blue", "purple"), legend.text = rownames(proportion), beside = TRUE)
 round(proportion ,  3)
 ```
 My second graph is a grouped chart of the frequencies of Threat Levels by race. In this case my predictor is Race and my outcome variable remains the Threat Level. The chart shows that African Americans are considered attack level threats at the **greatest frequency** however the disparity between other demographics is not statistically significant. What should be considered is that Asians were considered an "attack" level threat at the **lowest frequency**, but were considered an "other" level threat at the **highest frequency** by a fair margin. Overall the chart shows no general disparity between races and we can conclude that there is no significant relationship between Race and Threat Level. 
