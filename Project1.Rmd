@@ -1,11 +1,10 @@
 ---
   title: "Project 1: Exploring Police Shootings"
-  author: "Viren Halaharivi - SDS 313 UT  Austin"
+  author: "Viren Halaharivi
   output:
   html_document: default
   pdf_document: default
   word_document: default
-  date: "2022-09-20"
 ---
 
 ```{r setup, include=FALSE}
