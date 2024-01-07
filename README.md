@@ -1,2 +1,3 @@
-# Lab2
-This is my github Repository for Lab2
+Investigating Police Shootings
+* RMD file includes code
+* PDF write up and visuals included
