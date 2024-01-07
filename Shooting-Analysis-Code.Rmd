@@ -1,0 +1,98 @@
+---
+  title: "Exploring Police Shootings"
+  author: "Viren Halaharivi"
+  output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+  date: "2022-09"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Introduction
+The dataset I will investigate for this project is called **Project1_police_shootings.csv**. This police shootings dataset contains a plethora of variables which includes the Demographics of victims(Person.name, Person.age, Percent.gender, Person.race), Incident detail(Incident.Date.Month, Incident.Date.Day, Incident.Date.Year, Incident.Date.Full, Incident.Location.City, and Incident.Location.State), Factors of the incident(Factors.Mental.Illness, Factors.Fleeing, Factors.Threat.Level), the result of the incident(Shooting.Manner), and whether or not a body camera was used(Shooting.Body-Camera). The outcome variable is **Factors.Threat.level**, specifically attack level threats, and the predictors I will use to investigate my outcome are **Person.gender**, **Person.race**, and **Incident.Location.State**. 
+
+![Are there discrepancies in Police shooting victims?](officer_involved.jpeg) 
+
+```{r include = FALSE}
+ps = read.csv("Project1_police_shootings.csv")
+
+```
+
+## **Univariate Distribution of Outcome Variable**
+```{r echo = FALSE}
+library(ggplot2)
+univariate = ggplot(ps)
+#Create univariate barplot of outcome variable Threat Level
+univariate + geom_bar(aes(x=Factors.Threat.Level), position = "dodge", color = "darkblue", fill = "lightblue")+ labs(title = "Threat Level of Victims of Police Shootings", x = "Threat Level", y = "Count") 
+
+#attack level threat 
+attack = sum(ps$Factors.Threat.Level == "attack")
+
+#other level threat
+other = sum(ps$Factors.Threat.Level == "other")
+
+#undetermined threat level
+undetermined = sum(ps$Factors.Threat.Level == "undetermined")
+
+
+
+
+```
+
+To display my outcome variable I used a barplot to distinguish the count for each Threat Level. **4230** police shooting victims had a Threat level of *attack*, **2134** victims had a Threat level of *other*, and **205** victims had an *undetermined* Threat level. 
+
+## **Graphs of Predictor Variables**
+```{r echo = FALSE}
+#gender predictor graph using ggplot
+gender = ggplot(ps, aes(x = Person.Gender))
+gender + geom_bar(aes(fill = Factors.Threat.Level))+labs(title = "Threat Level Count By Gender", x = "Gender", y = "Count", legend = "Threat Level")
+
+#Show actual counts in a table
+table(ps$Person.Gender, ps$Factors.Threat.Level)
+
+
+
+
+
+
+```
+
+My bivariate graph of my gender predictor shows the count of each threat level separated by gender. The graph shows that even though there is a majority of male police shooting victims there is a difference between the proportion of males, females, and unknowns that are considered "attack" level threats. The graph shows that males are largely considered "attack" level threats at about 64.6% while females even with less representation are at 58.7%. 
+
+```{r echo = FALSE}
+#Create proportion table for race graph
+proportion = prop.table(table(ps$Person.Race, ps$Factors.Threat.Level), margin = 1)
+
+#Plot race graph
+barplot(proportion, main = "Grouped Threat Level Chart by Race", xlab = "Race", ylab = "Frequency", col = c("darkgrey", "darkblue", "red", "black", "lightblue", "pink", "green"), legend.text = rownames(proportion), beside = TRUE)
+round(proportion ,  3)
+```
+My second graph is a grouped chart of the frequencies of Threat Levels by race. In this case my predictor is Race and my outcome variable remains the Threat Level. The chart shows that African Americans are considered attack level threats at the **greatest frequency** however the disparity between other demographics is not statistically significant. What should be considered is that Asians were considered an "attack" level threat at the **lowest frequency**, but were considered an "other" level threat at the **highest frequency** by a fair margin. Overall the chart shows no general disparity between races and we can conclude that there is no significant relationship between Race and Threat Level. 
+
+
+```{r include = FALSE}
+library(dplyr)
+ps$Region = NA
+
+#Seems extraneous
+#Mutated data frame to put states into regions
+ps = ps %>%
+  mutate(Region = case_when(Incident.Location.State=="CA" |Incident.Location.State=="OR"|Incident.Location.State=="MT"|Incident.Location.State=="WY"|Incident.Location.State=="WA"|Incident.Location.State=="ID"|Incident.Location.State=="NV"|Incident.Location.State=="UT"|Incident.Location.State=="CO"|Incident.Location.State== "HI"|Incident.Location.State== "AL"~"West", Incident.Location.State== "TX"|Incident.Location.State == "OK"|Incident.Location.State== "NM"|Incident.Location.State == "AZ"  ~ "Southwest", Incident.Location.State == "ND"|Incident.Location.State== "SD"|Incident.Location.State== "NE"|Incident.Location.State== "IA"|Incident.Location.State== "KS"|Incident.Location.State== "MO"|Incident.Location.State== "MN"|Incident.Location.State== "IL"|Incident.Location.State== "WI"|Incident.Location.State== "IN"|Incident.Location.State== "IN"|Incident.Location.State== "MI"|Incident.Location.State== "OH"~ "Midwest", Incident.Location.State == "AR"|Incident.Location.State == "LA"|Incident.Location.State== "MS"|Incident.Location.State== "AL"|Incident.Location.State== "TN"|Incident.Location.State== "KY"|Incident.Location.State== "GA"|Incident.Location.State== "SC"|Incident.Location.State== "FL"|Incident.Location.State== "NC"|Incident.Location.State== "VA"|Incident.Location.State== "WV"~"Southeast", Incident.Location.State == "MD"|Incident.Location.State== "DE"|Incident.Location.State== "NJ"|Incident.Location.State== "PA"|Incident.Location.State== "CT"|Incident.Location.State== "RI"|Incident.Location.State== "MA"|Incident.Location.State== "NH"|Incident.Location.State== "NY"|Incident.Location.State== "VT"|Incident.Location.State== "ME"~"Northeast"))
+```
+
+
+
+```{r echo = FALSE}
+#Create Regional distribution for threat levels
+Regiontab = prop.table(table(ps$Region, ps$Factors.Threat.Level), margin = 1)
+barplot(Regiontab, main = "Grouped Threat Level Chart by Region(states)", xlab = "Threat Level", ylab = "Frequency", col = c("darkgrey", "darkblue", "red", "black", "lightblue"), legend.text = rownames(Regiontab), beside = TRUE)
+round(Regiontab ,  3)
+
+```
+My final predictor graph shows the frequencies of attack, other, and undetermined threat levels by state region. The west region has the **lowest** proportion of "attack" level threats and the **highest** proportion of "other" level threats. The Southeast region of the US has the highest proportion of "attack" level threats and the lowest number of "other" level threats. It's safe to conclude that there is no visible discrepancy between each region however there seems to be a relationship between a **high** proportion of attack level threats and a **low** proportion of other level threats. Undetermined threats are low for all regions and all three charts showed that. 
+
+## **Conclusion**
+I created a series of bar plots to describe the relationship between Threat Level and (Race, Gender, and State Region). I found that in the data set most police shooting victims were considered attack level threats, which I think was a slight limitation of the data in general. If we had more data which included a variety of threat levels we could clearly distinguish if there is any disparity between race, gender, and even state. In 2020 research was done about Police shooting victims and it was found that people of color were getting disproportionately shot compared to other demographics. In this data set my bar plots could not conclude that because of the limitations of threat level and race. For more information on Police shootings and racial disparities here is an [article](https://www.manhattan-institute.org/verbruggen-fatal-police-shootings).  
